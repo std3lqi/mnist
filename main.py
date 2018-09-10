@@ -14,7 +14,7 @@ import itertools
 from keras.utils.np_utils import to_categorical # convert to one-hot-encoding
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D, Activation
-from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
+from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D, AveragePooling2D
 
 from keras.optimizers import RMSprop
 from keras.preprocessing.image import ImageDataGenerator
@@ -47,29 +47,20 @@ def cnn_model():
     model.add(Dense(10, activation = "softmax"))    
     return model
 
-def cifar10_model():
+def lenet_5_model():
     model = Sequential()
-    model.add(Conv2D(32, (3, 3), padding='same',
-                    input_shape=(28,28,1)))
-    model.add(Activation('relu'))
-    model.add(Conv2D(32, (3, 3)))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+    model.add(Conv2D(6, (5, 5), padding='same', strides=(1, 1), activation ='relu', input_shape=(28,28,1)))
+    model.add(AveragePooling2D(pool_size=(2, 2), strides=(2, 2)))
 
-    model.add(Conv2D(64, (3, 3), padding='same'))
-    model.add(Activation('relu'))
-    model.add(Conv2D(64, (3, 3)))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+    model.add(Conv2D(6, (5, 5), padding='same', strides=(1, 1), activation ='relu'))
+    model.add(AveragePooling2D(pool_size=(2, 2), strides=(2, 2)))
 
     model.add(Flatten())
-    model.add(Dense(512))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(10))
-    model.add(Activation('softmax'))
+    model.add(Dense(120))
+
+    model.add(Dense(84))
+
+    model.add(Dense(10, activation = "softmax"))    
     return model
 
 def vgg16_model():
@@ -170,8 +161,8 @@ def main(model_name):
 
     if model_name == 'cnn':
         model = cnn_model()
-    elif model_name == 'cifar10':
-        model = cifar10_model()
+    elif model_name == 'lenet_5':
+        model = lenet_5_model()
     elif model_name == 'vgg16':
         model = vgg16_model()
 
@@ -252,4 +243,4 @@ def plot_confusion_matrix(cm, model_name, classes,
 
 
 if __name__ == '__main__':
-    main('cnn')
+    main('lenet_5')
